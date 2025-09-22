@@ -1,0 +1,188 @@
+/* ===== 基本 ===== */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #fdfdfd;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* ===== サイドバー ===== */
+#sidebar {
+  width: 170px;
+  background: #a2b7ce;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+}
+
+#projectList {
+  list-style: none;
+  padding: 0;
+}
+#projectList li {
+  padding: 6px;
+  cursor: pointer;
+}
+#projectList li.active {
+  background: #ccc;
+}
+#closeSidebar {
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* ===== メイン ===== */
+#main {
+  flex: 1;
+  padding: 10px;
+}
+
+/* ===== ヘッダー ===== */
+#header {
+  display: flex;
+  align-items: center;     /* 縦中央 */
+  justify-content: space-between;
+  background: #324152;
+  color: #fff;
+  padding: 8px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+#header h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+}
+#header #toggleSidebar {
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* ===== ヘッダー内の操作ボタン ===== */
+#controls {
+  display: flex;
+  position: relative;
+  top: 3px;   /* ← 手動調整用 */
+  font-size: 14px;
+}
+#controls button {
+  margin-left: 6px;
+  padding: 4px 8px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #f9f9f9;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+#controls button:hover {
+  background: #ddd;
+}
+
+/* ===== アウトライン ===== */
+#outline, .children {
+  list-style: none;
+  padding-left: 0;
+}
+.node {
+  margin: 6px 0;
+}
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.toggle {
+  margin-right: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 17px;
+}
+.text {
+  flex: 1;
+  outline: none;
+  padding-right: 10px;
+}
+.text:focus {
+  background: #eef;
+}
+.buttons button {
+  font-size: 14px;
+  margin-left: 4px;
+  padding: 2px 6px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+.buttons button:hover {
+  background: #ddd;
+}
+.children {
+  margin-left: 20px;
+  list-style: none;
+  padding-left: 0;
+}
+.hidden {
+  display: none;
+}
+
+/* ===== スマホ対応 ===== */
+  /* サイドバーをオフキャンバス風に */
+@media (max-width: 600px) {
+  #sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    transition: transform 0.3s ease;
+    z-index: 200;
+  }
+  #sidebar.hidden {
+    transform: translateX(-100%); /* 左に隠す */
+  }
+
+
+  /* メイン */
+  #main {
+    padding: 6px;
+  }
+
+  /* ヘッダー */
+  #header {
+    padding: 6px 8px;
+  }
+  #header h1 {
+    font-size: 16px;
+  }
+
+  /* 操作ボタン */
+  #controls button {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アウトラインメモ</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- サイドバー -->
+    <div id="sidebar">
+      <button id="closeSidebar">≡</button>
+      <h2>プロジェクト</h2>
+      <ul id="projectList"></ul>
+      <input type="text" id="newProjectName" placeholder="新規プロジェクト名">
+      <button id="addProject">追加</button>
+    </div>
+
+    <!-- メイン -->
+    <div id="main">
+      <!-- ヘッダー -->
+      <header id="header">
+        <button id="toggleSidebar">≡</button>
+        <h1 id="currentProject">default</h1>
+        <div id="controls">
+          <button id="expandAll">全部展開</button>
+          <button id="collapseAll">全部折りたたみ</button>
+          <button id="saveCloud">保存</button>
+        </div>
+      </header>
+
+      <!-- 本文 -->
+      <div id="content">
+        <ul id="outline">
+          <li class="node">
+            <div class="content">
+              <button class="toggle">▶</button>
+              <span class="text" contenteditable="true">メモを書く</span>
+              <div class="buttons">
+                <button class="add">＋</button>
+                <button class="indent">→</button>
+                <button class="outdent">←</button>
+                <button class="delete">🗑</button>
+              </div>
+            </div>
+            <ul class="children"></ul>
+          </li>
+        </ul>
+      </div>
+    </div> <!-- #main の閉じ -->
+  </div>   <!-- #app の閉じ -->
+
+  <script src="script.js"></script>
+</body>
+</html>
+
