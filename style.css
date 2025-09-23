@@ -3,6 +3,7 @@ body {
   font-family: sans-serif;
   margin: 0;
   background: #fdfdfd;
+  overflow-x: hidden;
 }
 #app {
   display: flex;
@@ -69,13 +70,6 @@ body {
   padding-right: 10px;
 }
 .text:focus { background: #eef; }
-.enterBtn {
-  margin-left: 4px;
-  border: 1px solid #aaa;
-  border-radius: 3px;
-  background: #f9f9f9;
-  cursor: pointer;
-}
 
 #outline, .children, #outline li, .children li {
   list-style: none;
