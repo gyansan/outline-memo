@@ -4,7 +4,6 @@ body {
   margin: 0;
   background: #fdfdfd;
 }
-
 #app {
   display: flex;
   height: 100vh;
@@ -12,103 +11,47 @@ body {
   margin: auto;
 }
 
-/* ===== サイドバー ===== */
+/* サイドバー初期は非表示 */
 #sidebar {
+  display: none;             /* ← 初期非表示 */
   width: 170px;
   background: #a2b7ce;
   padding: 10px;
   border-right: 1px solid #ccc;
   overflow-y: auto;
+  z-index: 200;
 }
 
-#projectList {
-  list-style: none;
-  padding: 0;
-}
-#projectList li {
-  padding: 6px;
-  cursor: pointer;
-}
-#projectList li.active {
-  background: #ccc;
-}
-#closeSidebar {
-  font-size: 20px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
+/* サイドバー表示用クラス */
+#sidebar.show {
   display: block;
-  margin-bottom: 10px;
+  position: absolute;        /* PC/スマホ共通でオフキャンバス風 */
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transition: all 0.3s ease;
 }
 
 /* ===== メイン ===== */
-#main {
-  flex: 1;
-  padding: 10px;
-}
+#main { flex: 1; padding: 10px; }
 
 /* ===== ヘッダー ===== */
 #header {
   display: flex;
-  align-items: center;     /* 縦中央 */
+  align-items: center;
   justify-content: space-between;
   background: #324152;
   color: #fff;
   padding: 8px 12px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
-#header h1 {
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.2;
-}
-#header #toggleSidebar {
-  font-size: 20px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  padding: 4px 8px;
-  display: flex;
-  align-items: center;
-}
+#header h1 { margin: 0; font-size: 18px; }
+#controls button { margin-left: 6px; }
 
-/* ===== ヘッダー内の操作ボタン ===== */
-#controls {
-  display: flex;
-  position: relative;
-  top: 3px;   /* ← 手動調整用 */
-  font-size: 14px;
-}
-#controls button {
-  margin-left: 6px;
-  padding: 4px 8px;
-  border: 1px solid #aaa;
-  border-radius: 3px;
-  background: #f9f9f9;
-  cursor: pointer;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-}
-#controls button:hover {
-  background: #ddd;
-}
-
-/* ===== アウトライン ===== */
-#outline, .children {
-  list-style: none;
-  padding-left: 0;
-}
-.node {
-  margin: 6px 0;
-}
+/* ===== ノード ===== */
+.node { margin: 6px 0; }
 .content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 4px 6px;
   background: #fff;
   border: 1px solid #ccc;
@@ -119,70 +62,52 @@ body {
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 17px;
 }
 .text {
   flex: 1;
   outline: none;
   padding-right: 10px;
 }
-.text:focus {
-  background: #eef;
-}
-.buttons button {
-  font-size: 14px;
+.text:focus { background: #eef; }
+.enterBtn {
   margin-left: 4px;
-  padding: 2px 6px;
   border: 1px solid #aaa;
   border-radius: 3px;
   background: #f9f9f9;
   cursor: pointer;
 }
-.buttons button:hover {
-  background: #ddd;
-}
-.children {
-  margin-left: 20px;
+
+#outline, .children, #outline li, .children li {
   list-style: none;
-  padding-left: 0;
-}
-.hidden {
-  display: none;
 }
 
+/* 子リスト */
+.children { margin-left: 20px; padding-left: 0; list-style: none; }
+.hidden { display: none; }
+
+
 /* ===== スマホ対応 ===== */
-  /* サイドバーをオフキャンバス風に */
 @media (max-width: 600px) {
   #sidebar {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
+    left: -200px;
+    top: 0; bottom: 0;
     width: 200px;
-    transition: transform 0.3s ease;
+    transition: left 0.3s ease;
     z-index: 200;
   }
-  #sidebar.hidden {
-    transform: translateX(-100%); /* 左に隠す */
-  }
-
-
-  /* メイン */
-  #main {
-    padding: 6px;
-  }
-
-  /* ヘッダー */
-  #header {
-    padding: 6px 8px;
-  }
-  #header h1 {
-    font-size: 16px;
-  }
-
-  /* 操作ボタン */
+  #sidebar.show { left: 0; }
+  #main { padding: 6px; }
+  #header { padding: 6px 8px; }
+  #header h1 { font-size: 16px; }
   #controls button {
     font-size: 12px;
     padding: 4px 6px;
+  }
+}
+
+@media (min-width: 601px) {
+  .enterBtn {
+    display: none;
   }
 }
