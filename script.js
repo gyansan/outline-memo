@@ -209,9 +209,23 @@ document.getElementById("saveCloud").addEventListener("click", async () => {
   alert(`${project} を保存しました`);
 });
 
-// ノードのテキストを常に1行にする
+
+// ===== 改行禁止部分 =====
+let isComposing = false;
+
+// 日本語変換開始
+outline.addEventListener("compositionstart", () => {
+  isComposing = true;
+});
+
+// 日本語変換終了
+outline.addEventListener("compositionend", () => {
+  isComposing = false;
+});
+
+// 改行禁止処理
 outline.addEventListener("input", e => {
-  if (e.target.classList.contains("text")) {
+  if (e.target.classList.contains("text") && !isComposing) {
     e.target.textContent = e.target.textContent.replace(/\n/g, "");
   }
 });
