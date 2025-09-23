@@ -88,28 +88,51 @@ outline.addEventListener("keydown", e => {
 
 // ===== スマホ: スワイプ操作 =====
 let startX = 0;
+
 outline.addEventListener("touchstart", e => {
   const li = e.target.closest(".node");
   if (!li) return;
+  const content = li.querySelector(".content");
   startX = e.touches[0].clientX;
-  li.dataset.swiping = "true";
+  content.style.transition = "none"; // 行本体だけ動かす
 });
+
+outline.addEventListener("touchmove", e => {
+  const li = e.target.closest(".node");
+  if (!li) return;
+  const content = li.querySelector(".content");
+  const diff = e.touches[0].clientX - startX;
+
+  content.style.transform = `translateX(${diff}px)`;
+
+  // 削除候補のとき赤背景
+  if (diff < -120) {
+    content.style.background = "#f8d7da";
+  } else {
+    content.style.background = ""; // 元に戻す
+  }
+});
+
 outline.addEventListener("touchend", e => {
   const li = e.target.closest(".node");
-  if (!li || li.dataset.swiping !== "true") return;
-  const endX = e.changedTouches[0].clientX;
-  const diff = endX - startX;
-  if (diff > 50) {
-    indentNode(li);      // 右スワイプ → インデント
-  } else if (diff < -50) {
-    if (Math.abs(diff) > 120) {
-      deleteNode(li);    // 大きく左スワイプ → 削除
-    } else {
-      outdentNode(li);   // 小さく左スワイプ → アウトデント
-    }
+  if (!li) return;
+  const content = li.querySelector(".content");
+  const diff = e.changedTouches[0].clientX - startX;
+
+  if (diff > 30) {
+    indentNode(li);
+  } else if (diff < -120) {
+    deleteNode(li);
+  } else if (diff < -30) {
+    outdentNode(li);
   }
-  li.dataset.swiping = "false";
+
+  // 戻す
+  content.style.transition = "transform 0.2s ease";
+  content.style.transform = "translateX(0)";
+  content.style.background = ""; // 背景リセット
 });
+
 
 // ===== JSON変換 =====
 function nodeToJson(li) {
@@ -198,3 +221,4 @@ window.addEventListener("DOMContentLoaded", () => {
   sidebar.classList.add("hidden");
   loadProjects();
 });
+
