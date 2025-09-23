@@ -105,12 +105,6 @@ outline.addEventListener("touchmove", e => {
 
   content.style.transform = `translateX(${diff}px)`;
 
-  // 削除候補のとき赤背景
-  if (diff < -120) {
-    content.style.background = "#f8d7da";
-  } else {
-    content.style.background = ""; // 元に戻す
-  }
 });
 
 outline.addEventListener("touchend", e => {
@@ -120,18 +114,17 @@ outline.addEventListener("touchend", e => {
   const diff = e.changedTouches[0].clientX - startX;
 
   if (diff > 30) {
-    indentNode(li);
-  } else if (diff < -120) {
-    deleteNode(li);
+    indentNode(li);       // → 右スワイプでインデント
   } else if (diff < -30) {
-    outdentNode(li);
+    outdentNode(li);      // ← 左スワイプでアウトデント
   }
 
   // 戻す
   content.style.transition = "transform 0.2s ease";
   content.style.transform = "translateX(0)";
-  content.style.background = ""; // 背景リセット
+  content.style.background = "";
 });
+
 
 
 // ===== JSON変換 =====
@@ -207,27 +200,6 @@ document.getElementById("saveCloud").addEventListener("click", async () => {
   const project = getCurrentProject();
   await db.collection("outlines").doc(project).set({ data });
   alert(`${project} を保存しました`);
-});
-
-
-// ===== 改行禁止部分 =====
-let isComposing = false;
-
-// 日本語変換開始
-outline.addEventListener("compositionstart", () => {
-  isComposing = true;
-});
-
-// 日本語変換終了
-outline.addEventListener("compositionend", () => {
-  isComposing = false;
-});
-
-// 改行禁止処理
-outline.addEventListener("input", e => {
-  if (e.target.classList.contains("text") && !isComposing) {
-    e.target.textContent = e.target.textContent.replace(/\n/g, "");
-  }
 });
 
 // ===== 初期ロード =====
