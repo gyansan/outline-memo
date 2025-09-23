@@ -67,6 +67,7 @@ addProjectBtn.addEventListener("click", async () => {
     currentProject = name;
     currentProjectTitle.textContent = name;
     newProjectInput.value = "";
+    await loadOutlineFromCloud(name);
   } catch (err) {
     console.error(err);
     alert("プロジェクト追加に失敗しました");
@@ -153,7 +154,7 @@ outline.addEventListener("click", e => {
     e.target.textContent = children.classList.contains("hidden") ? "▶" : "▼";
   }
   if (e.target.classList.contains("add")) {
-    const newLi = createNode("新しいメモ");
+    const newLi = createNode("");
     li.querySelector(".children").appendChild(newLi);
     newLi.querySelector(".text").focus();
   }
@@ -236,20 +237,29 @@ saveCloudBtn.addEventListener("click", async () => {
 async function loadOutlineFromCloud(project) {
   try {
     const doc = await db.collection("outlines").doc(project).get();
+    outline.innerHTML = "";
+
     if (doc.exists) {
       const data = doc.data().data;
-      outline.innerHTML = "";
-      data.forEach(item => outline.appendChild(jsonToNode(item)));
+      if (data && data.length > 0) {
+        data.forEach(item => outline.appendChild(jsonToNode(item)));
+      } else {
+        // データが空なら初期行を追加
+        outline.appendChild(createNode("メモを書く"));
+      }
       console.log(`${project} を読み込みました`);
     } else {
-      outline.innerHTML = "";
-      console.log(`${project} にデータがありません`);
+      // 新規プロジェクト用の初期行
+      outline.appendChild(createNode("メモを書く"));
+      console.log(`${project} にデータがありません（新規プロジェクト）`);
     }
+
   } catch (err) {
     console.error(err);
     alert("読み込みに失敗しました");
   }
 }
+
 
 // ページロード時
 window.addEventListener("DOMContentLoaded", () => {
