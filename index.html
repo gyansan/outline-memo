@@ -13,7 +13,7 @@
 <body>
   <div id="app">
     <!-- サイドバー -->
-    <div id="sidebar">
+    <div id="sidebar" class="hidden">
       <button id="closeSidebar">≡</button>
       <h2>プロジェクト</h2>
       <ul id="projectList"></ul>
@@ -28,8 +28,6 @@
         <button id="toggleSidebar">≡</button>
         <h1 id="currentProject">default</h1>
         <div id="controls">
-          <button id="expandAll">全部展開</button>
-          <button id="collapseAll">全部折りたたみ</button>
           <button id="saveCloud">保存</button>
         </div>
       </header>
@@ -40,22 +38,16 @@
           <li class="node">
             <div class="content">
               <button class="toggle">▶</button>
-              <span class="text" contenteditable="true"></span>
-              <div class="buttons">
-                <button class="add">＋</button>
-                <button class="indent">→</button>
-                <button class="outdent">←</button>
-                <button class="delete">🗑</button>
-              </div>
+              <span class="text" contenteditable="true">メモを書く</span>
+              <button class="enterBtn">↩</button>
             </div>
             <ul class="children"></ul>
           </li>
         </ul>
       </div>
     </div>
-  </div> 
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
