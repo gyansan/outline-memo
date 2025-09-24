@@ -49,7 +49,10 @@ body {
 #controls button { margin-left: 6px; }
 
 /* ===== ノード ===== */
-.node { margin: 6px 0; }
+.node { margin: 6px 0;
+  position: relative;
+  overflow: hidden; /* ← はみ出し禁止 */
+}
 .content {
   display: flex;
   align-items: center;
