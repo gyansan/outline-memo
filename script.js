@@ -51,15 +51,11 @@ function createNode(text, children = []) {
     <div class="content">
       <button class="toggle">▶</button>
       <span class="text" contenteditable="true">${text}</span>
-      <button class="enterBtn">↩</button>
     </div>
     <ul class="children"></ul>
   `;
   const childrenUl = li.querySelector(".children");
   children.forEach(child => childrenUl.appendChild(createNode(child.text, child.children)));
-
-  // ↩ボタン（スマホ用）
-  li.querySelector(".enterBtn").addEventListener("click", () => addNode(li));
 
   return li;
 }
@@ -101,10 +97,12 @@ outline.addEventListener("touchmove", e => {
   const li = e.target.closest(".node");
   if (!li) return;
   const content = li.querySelector(".content");
-  const diff = e.touches[0].clientX - startX;
+  let diff = e.touches[0].clientX - startX;
+
+  if (diff > 40) diff = 40;
+  if (diff < -40) diff = -40;
 
   content.style.transform = `translateX(${diff}px)`;
-
 });
 
 outline.addEventListener("touchend", e => {
