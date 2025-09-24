@@ -60,27 +60,64 @@ function createNode(text, children = []) {
   return li;
 }
 
-// ===== PC: キーボード操作 =====
 const outline = document.getElementById("outline");
-outline.addEventListener("keydown", e => {
+// ▶/▼ 折り畳みトグル（クリック）
+outline.addEventListener("click", (e) => {
+  const btn = e.target.closest(".toggle");
+  if (!btn) return;
+  const li = btn.closest(".node");
+  const children = li && li.querySelector(".children");
+  if (!children) return;
+
+  const hidden = children.classList.toggle("hidden");
+  btn.textContent = hidden ? "▶" : "▼";
+});
+
+// ===== PC: キーボード操作 =====
+outline.addEventListener("keydown", (e) => {
+  if (!e.target.classList.contains("text")) return;
+
   const li = e.target.closest(".node");
   if (!li) return;
 
-  if (e.key === "Enter") {
+  const textEl = e.target; // ← フォーカス中の要素を保持
+
+  if (e.key === "Tab") {
+    e.preventDefault(); 
+    if (e.shiftKey) {
+      outdentNode(li);
+    } else {
+      indentNode(li);
+    }
+    setTimeout(() => textEl.focus(), 0);
+
+  } else if (e.key === "Enter") {
     e.preventDefault();
-    addNode(li);
-  } else if (e.key === "Tab" && !e.shiftKey) {
-    e.preventDefault();
-    indentNode(li);
-  } else if (e.key === "Tab" && e.shiftKey) {
-    e.preventDefault();
-    outdentNode(li);
+    const newLi = createNode("");
+    li.insertAdjacentElement("afterend", newLi);
+    newLi.querySelector(".text").focus();
+
   } else if ((e.key === "Backspace" || e.key === "Delete") &&
              li.querySelector(".text").textContent.trim() === "") {
     e.preventDefault();
+
+    // 削除前に「フォーカス移動先」を探す
+    const prev = li.previousElementSibling;
+    const parent = li.parentElement.closest(".node");
+
     deleteNode(li);
+
+    // 優先順位: ①直前の兄弟 ②親ノード ③次の兄弟
+    if (prev) {
+      prev.querySelector(".text").focus();
+    } else if (parent) {
+      parent.querySelector(".text").focus();
+    } else if (outline.firstElementChild) {
+      outline.firstElementChild.querySelector(".text").focus();
+    }
   }
 });
+
 
 // ===== スマホ: スワイプ操作 =====
 let startX = 0;
@@ -157,18 +194,63 @@ async function loadProjects() {
 function addProject(name) {
   if (!name) return;
   if (Array.from(projectList.children).some(li => li.dataset.project === name)) return;
+
   const li = document.createElement("li");
   li.dataset.project = name;
-  li.textContent = name;
-  li.addEventListener("click", async () => {
+
+  // 名前部分
+  const span = document.createElement("span");
+  span.textContent = name;
+  span.addEventListener("click", async () => {
     currentProject = name;
     currentProjectTitle.textContent = name;
     document.querySelectorAll("#projectList li").forEach(li => li.classList.remove("active"));
     li.classList.add("active");
     await loadOutlineFromCloud(name);
+    sidebar.classList.remove("show");
   });
+
+  // 削除ボタン
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "🗑";
+  delBtn.addEventListener("click", async (e) => {
+    e.stopPropagation(); // プロジェクト選択と競合しないように
+    if (confirm(`${name} を削除しますか？`)) {
+      try {
+        await db.collection("projects").doc(name).delete();
+        await db.collection("outlines").doc(name).delete();
+        li.remove();
+
+        // 削除後、別プロジェクトを選択 or default を再作成
+        if (currentProject === name) {
+          if (projectList.children.length > 0) {
+            const first = projectList.children[0].dataset.project;
+            currentProject = first;
+            currentProjectTitle.textContent = first;
+            projectList.children[0].classList.add("active");
+            await loadOutlineFromCloud(first);
+          } else {
+            await db.collection("projects").doc("default").set({ name: "default" });
+            addProject("default");
+            currentProject = "default";
+            currentProjectTitle.textContent = "default";
+            await loadOutlineFromCloud("default");
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        alert("削除に失敗しました");
+      }
+    }
+  });
+
+  li.appendChild(span);
+  li.appendChild(delBtn);
   projectList.appendChild(li);
+
+  if (name === currentProject) li.classList.add("active");
 }
+
 addProjectBtn.addEventListener("click", async () => {
   const name = newProjectInput.value.trim();
   if (!name) return;
@@ -179,6 +261,7 @@ addProjectBtn.addEventListener("click", async () => {
   newProjectInput.value = "";
   await loadOutlineFromCloud(name);
 });
+
 function getCurrentProject() { return currentProject || "default"; }
 
 async function loadOutlineFromCloud(project) {

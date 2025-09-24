@@ -15,7 +15,7 @@ body {
 /* サイドバー初期は非表示 */
 #sidebar {
   display: none;             /* ← 初期非表示 */
-  width: 170px;
+  width: 230px;
   background: #a2b7ce;
   padding: 10px;
   border-right: 1px solid #ccc;
@@ -31,6 +31,24 @@ body {
   top: 0;
   bottom: 0;
   transition: all 0.3s ease;
+}
+
+#projectList li {
+  display: flex;
+  justify-content: space-between; /* 左右に分ける */
+  align-items: center;            /* 縦位置を中央揃え */
+  padding: 6px;
+  cursor: pointer;
+}
+
+#projectList li button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+#projectList li button:hover {
+  color: red;
 }
 
 /* ===== メイン ===== */
@@ -49,10 +67,17 @@ body {
 #controls button { margin-left: 6px; }
 
 /* ===== ノード ===== */
-.node { margin: 6px 0;
+.node {
   position: relative;
-  overflow: hidden; /* ← はみ出し禁止 */
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
+
+.node .content {
+  padding: 8px 0;  /* ← 行間はこっちで調整 */
+}
+
 .content {
   display: flex;
   align-items: center;
@@ -86,14 +111,28 @@ body {
 /* ===== スマホ対応 ===== */
 @media (max-width: 600px) {
   #sidebar {
-    position: absolute;
-    left: -200px;
-    top: 0; bottom: 0;
-    width: 200px;
-    transition: left 0.3s ease;
+    position: fixed;       /* 画面に固定 */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;           /* ← 全幅 */
+    height: 100%;          /* ← 全高 */
+    background: #a2b7ce;   /* 背景色はそのまま */
     z-index: 200;
+    transform: translateX(-100%); /* 初期は非表示 */
+    transition: transform 0.3s ease;
   }
-  #sidebar.show { left: 0; }
+  #sidebar.show {
+    transform: translateX(0);
+  }
+    #sidebar h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  #sidebar li {
+    font-size: 16px;
+    padding: 10px;
+  }
   #main { padding: 6px; }
   #header { padding: 6px 8px; }
   #header h1 { font-size: 16px; }
